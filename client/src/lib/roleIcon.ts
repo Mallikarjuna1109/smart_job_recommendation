@@ -11,12 +11,6 @@ const RULES: [RegExp, LucideIcon][] = [
   [/backend|back-end|java developer/i, Server],
 ];
 
-/**
- * Best-effort role icon from the job title's text. The API doesn't return a
- * job category, so this is a purely cosmetic classification for the card's
- * icon container - never presented as data, and it falls back to a generic
- * briefcase icon whenever nothing matches.
- */
 export function getRoleIcon(title: string): LucideIcon {
   for (const [pattern, icon] of RULES) {
     if (pattern.test(title)) return icon;

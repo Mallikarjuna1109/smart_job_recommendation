@@ -9,7 +9,6 @@ interface JobPreviewProps {
   candidateId: string;
 }
 
-/** Quick-preview content shown inside the Drawer when a job is clicked from a list. Links out to the full match-details page. */
 export function JobPreview({ recommendation, candidateId }: JobPreviewProps) {
   const { job, score, reasons } = recommendation;
 

@@ -9,7 +9,6 @@ const ICONS: Record<MatchReason["type"], LucideIcon> = {
   location: MapPin,
 };
 
-/** Transparent, itemized breakdown of how a match score was calculated. */
 export function MatchReasonList({ reasons }: { reasons: MatchReason[] }) {
   if (reasons.length === 0) {
     return <p className="text-sm text-ink-2">No specific graph connections contributed to this score.</p>;

@@ -20,7 +20,6 @@ interface FilterBarProps {
   locations: string[];
 }
 
-/** Compact, single-row filter bar over the already-fetched recommendation list - no new endpoint. */
 export function FilterBar({ filters, onChange, locations }: FilterBarProps) {
   const active = filters.search || filters.location || filters.minExperience > 0;
 

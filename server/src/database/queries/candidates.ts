@@ -13,7 +13,6 @@ function toCandidate(props: Record<string, any>): Candidate {
   };
 }
 
-/** GET /api/candidates - list all candidates for the profile picker. Simple, no traversal. */
 export async function listCandidates(): Promise<Candidate[]> {
   const records = await runQuery(
     `MATCH (c:Candidate)
@@ -27,20 +26,6 @@ function toSkillOrTech(n: any): Skill | Technology {
   return { id: n.properties.id, name: n.properties.name, category: n.properties.category };
 }
 
-/**
- * GET /api/candidates/:id - a candidate's full profile: direct skills,
- * direct technologies, and every project they worked on together with the
- * technologies that project used.
- *
- * This is split into two queries instead of one. CognoDB's Cypher
- * implementation doesn't support *nested* aggregation - i.e. calling an
- * aggregating function like `collect()` inside the arguments of another
- * aggregating function within the same WITH (which is what the original,
- * single-query version did to build `projectData`: a `collect(... {
- * technologies: collect(...) })`). Each query below only ever aggregates
- * once per WITH, so each stays valid, and the two result sets are merged
- * here in the application layer.
- */
 export async function getCandidateProfile(candidateId: string): Promise<CandidateProfile | null> {
   const candidateRecords = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})
@@ -66,8 +51,6 @@ export async function getCandidateProfile(candidateId: string): Promise<Candidat
     .filter(Boolean)
     .map(toSkillOrTech);
 
-  // Second query: one row per project the candidate worked on, each with its
-  // own (single-level) collect() of the technologies that project uses.
   const projectRecords = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})-[:WORKED_ON]->(p:Project)
      OPTIONAL MATCH (p)-[:USES_TECHNOLOGY]->(pt:Technology)

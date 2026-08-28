@@ -2,13 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ---------------------------------------------------------------------
- * Theme tokens. Three states: explicit light, explicit dark, and system
- * (no data-theme attribute -> the media-query block below decides, guarded
- * so an explicit "light" override always wins over an OS dark preference).
- * Light = warm ivory/white + navy ink + indigo accent.
- * Dark   = black/charcoal + warm beige ink + beige accent.
- * ------------------------------------------------------------------- */
 :root {
   --color-bg: 247 247 245;
   --color-surface: 255 255 255;
@@ -27,23 +20,12 @@
   --color-positive: 5 150 105;
   --color-warning: 217 119 6;
   --color-danger: 220 38 38;
-  /* Dedicated match-status colors (lib/match.ts) - kept separate from the
-     generic positive/warning/danger semantic tokens above so that tuning
-     match-card visibility never touches unrelated status UI (DbStatusBanner,
-     generic badges, etc). Must stay clearly distinct from one another and
-     from the beige accent - see the dark block below for why this token
-     split exists. */
   --color-match-excellent: 5 150 105;
   --color-match-strong: 217 119 6;
   --color-match-moderate: 234 88 12;
   --color-match-weak: 225 29 72;
 }
 
-/* Dark = black canvas + warm beige/cream identity for the general UI, but
- * match-status colors are a deliberate exception: they use clearly visible
- * green/amber/orange/red (not beige-muted tones) so a candidate can tell a
- * 100% match from a 60% one at a glance. Surfaces step up in three visible
- * layers (page -> card -> elevated/hover) rather than blending together. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-bg: 11 11 10;
@@ -103,7 +85,6 @@ body {
   @apply bg-canvas text-ink antialiased;
 }
 
-/* Subtle, purposeful theme-switch transition - not applied to layout properties. */
 body,
 .surface,
 .surface-2,
@@ -114,9 +95,6 @@ textarea {
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
 }
 
-/* Respect a system-level request for reduced motion: keep state changes
-   (theme switch, drawer open/close) instant instead of animated, without
-   touching the transitions/animations themselves for everyone else. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -128,12 +106,6 @@ textarea {
   }
 }
 
-/* Consistent accessible keyboard-focus ring for interactive elements that
-   don't already define their own :focus-visible treatment (.btn-primary,
-   .btn-secondary and .input below do, and win on specificity where they
-   overlap). Inset so it's never clipped by a parent's overflow-hidden (e.g.
-   the CandidateSelector list). Mouse/touch interaction never triggers
-   :focus-visible, so this never shows up as a click/hover effect. */
 a:focus-visible,
 button:focus-visible,
 [role="button"]:focus-visible,
@@ -143,7 +115,6 @@ button:focus-visible,
 }
 
 @layer components {
-  /* Typography scale */
   .text-eyebrow {
     @apply text-xs font-semibold uppercase tracking-wider text-ink-3 dark:text-accent;
   }
@@ -163,7 +134,6 @@ button:focus-visible,
     @apply text-xs text-ink-3;
   }
 
-  /* Surfaces */
   .surface {
     @apply rounded-xl border border-line bg-surface;
   }
@@ -171,7 +141,6 @@ button:focus-visible,
     @apply rounded-xl border border-line bg-surface-2;
   }
 
-  /* Buttons */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent transition hover:bg-accent-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50;
   }
@@ -182,10 +151,6 @@ button:focus-visible,
     @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-2 transition hover:bg-surface-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50;
   }
 
-  /* Badges - neutral in light mode (unchanged from the original redesign);
-     in dark mode, a flat elevated-surface tint (not a low-opacity beige
-     wash) so tags stay clearly visible against the card instead of nearly
-     disappearing into it. */
   .badge {
     @apply inline-flex items-center gap-1 rounded-md border border-line bg-surface-2 px-2 py-1 text-xs font-medium text-ink-2 dark:border-line-hover dark:bg-surface-3 dark:text-accent;
   }
@@ -202,7 +167,6 @@ button:focus-visible,
     @apply inline-flex items-center gap-1 rounded-md bg-danger/10 px-2 py-1 text-xs font-medium text-danger;
   }
 
-  /* Forms */
   .label {
     @apply mb-1.5 block text-sm font-medium text-ink-2;
   }

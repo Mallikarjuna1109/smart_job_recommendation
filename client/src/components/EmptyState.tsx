@@ -8,7 +8,6 @@ interface EmptyStateProps {
   action?: ReactNode;
 }
 
-/** Shown when a query legitimately returns zero results (not an error). */
 export function EmptyState({ icon: Icon = Search, title, description, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-line px-6 py-16 text-center">

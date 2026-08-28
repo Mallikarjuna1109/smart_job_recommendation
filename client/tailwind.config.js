@@ -1,11 +1,5 @@
-/** @type {import('tailwindcss').Config} */
 export default {
   content: ["./index.html", "./src/**/*.{ts,tsx}"],
-  // `dark:` fires on an explicit dark override *or* on System mode when the
-  // OS itself prefers dark - matching the exact 3-state logic the CSS custom
-  // properties in index.css already use. Without the media-query arm, System
-  // + an OS dark preference would leave `data-theme` unset and every `dark:`
-  // utility would silently never apply.
   darkMode: [
     "variant",
     ['@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) & }', ':root[data-theme="dark"] &'],

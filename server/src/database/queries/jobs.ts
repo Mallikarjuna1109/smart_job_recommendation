@@ -30,10 +30,6 @@ function mapJobRecord(record: any): JobWithCompany {
   };
 }
 
-/**
- * GET /api/jobs/:id - a single job with its company and full requirement
- * graph (required skills + required technologies).
- */
 export async function getJobById(jobId: string): Promise<JobWithCompany | null> {
   const records = await runQuery(
     `MATCH (j:Job {id: $jobId})-[:OFFERED_BY]->(company:Company)

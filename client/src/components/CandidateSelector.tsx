@@ -6,11 +6,9 @@ interface CandidateSelectorProps {
   candidates: Candidate[];
   selectedId?: string | null;
   onSelect: (id: string) => void;
-  /** Compact mode is used inside the Navbar switcher drawer; the default is the full Dashboard picker. */
   compact?: boolean;
 }
 
-/** Searchable candidate list - replaces the old repetitive card grid. */
 export function CandidateSelector({ candidates, selectedId, onSelect, compact = false }: CandidateSelectorProps) {
   const [query, setQuery] = useState("");
 

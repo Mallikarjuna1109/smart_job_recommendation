@@ -10,7 +10,6 @@ import type {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || "/api";
 
-/** Thrown for any non-2xx API response. Carries the server's friendly message when available. */
 export class ApiError extends Error {
   status: number;
   constructor(status: number, message: string) {
@@ -25,7 +24,6 @@ async function request<T>(path: string): Promise<T> {
   try {
     response = await fetch(`${API_BASE}${path}`);
   } catch {
-    // Network-level failure - server unreachable entirely.
     throw new ApiError(0, "We couldn't reach the JobGraph server. Please check your connection and try again.");
   }
 
@@ -35,7 +33,6 @@ async function request<T>(path: string): Promise<T> {
       const body = await response.json();
       if (body?.message) message = body.message;
     } catch {
-      // response wasn't JSON - fall back to the generic message
     }
     throw new ApiError(response.status, message);
   }

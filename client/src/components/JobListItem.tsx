@@ -9,15 +9,6 @@ interface JobListItemProps {
   onPreview: () => void;
 }
 
-/**
- * One row in the Recommendations/Dashboard lists. A two-column grid: job
- * identity (role icon, title, company, metadata, tags, strongest
- * connection) on the left, and a distinct match-info column (donut,
- * connection count, CTA) on the right - stacked below the content on
- * mobile, aligned beside it from `sm` up. No left accent bar: the card
- * border is uniform on all sides, and match strength is communicated only
- * through the donut (see lib/match.ts for the shared color mapping).
- */
 export function JobListItem({ recommendation, onPreview }: JobListItemProps) {
   const { job, score, reasons } = recommendation;
   const topSignals = reasons.slice(0, 4);

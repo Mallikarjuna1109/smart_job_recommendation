@@ -23,7 +23,6 @@ export interface RawJobMatch {
   projectTechnologies: string[];
 }
 
-/** Shared row->RawJobMatch mapping for both the all-jobs and single-job variants below, so they can never drift apart. */
 function mapRawJobMatchRecord(r: any): RawJobMatch {
   const c = (r.get("c") as any).properties;
   const j = (r.get("j") as any).properties;
@@ -52,24 +51,6 @@ function mapRawJobMatchRecord(r: any): RawJobMatch {
   };
 }
 
-/**
- * *** CORE MULTI-HOP RECOMMENDATION QUERY ***
- *
- * This is the query that makes "Find my matches" work. It fans out from a
- * single Candidate node across THREE independent graph paths and combines
- * the results per job:
- *
- *   1. (c)-[:HAS_SKILL]->(Skill)<-[:REQUIRES_SKILL]-(j)                        -- 2 hops
- *   2. (c)-[:KNOWS_TECHNOLOGY]->(Technology)<-[:REQUIRES_TECHNOLOGY]-(j)       -- 2 hops
- *   3. (c)-[:WORKED_ON]->(Project)-[:USES_TECHNOLOGY]->(Technology)
- *        <-[:REQUIRES_TECHNOLOGY]-(j)                                          -- 3 hops
- *
- * Path 3 is the interesting one: it surfaces jobs the candidate is qualified
- * for because of what they actually *built*, not just what they listed as a
- * skill. Only jobs connected through at least one of these paths are
- * returned - everything else is filtered out in the WHERE clause below, so
- * the database (not application code) decides candidacy.
- */
 export async function findJobMatchesForCandidate(candidateId: string): Promise<RawJobMatch[]> {
   const records = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})
@@ -94,16 +75,6 @@ export async function findJobMatchesForCandidate(candidateId: string): Promise<R
   return records.map(mapRawJobMatchRecord);
 }
 
-/**
- * Same traversal and scoring inputs as `findJobMatchesForCandidate`, scoped
- * to one job via `Job {id: $jobId}` instead of scanning every job - used by
- * `getMatchExplanation()` ("Why this match?") so it doesn't have to re-run
- * the multi-hop query across the whole job catalog just to read back one
- * job's result. Same MATCH/OPTIONAL MATCH/WHERE pattern as the all-jobs
- * query, so the filtering semantics (and therefore the score) for that job
- * are identical - returns null under the exact same condition the all-jobs
- * query would have excluded it (no matched skill/technology at all).
- */
 export async function findJobMatchForCandidateAndJob(candidateId: string, jobId: string): Promise<RawJobMatch | null> {
   const records = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})
@@ -137,23 +108,6 @@ export interface DiscoveredTechnologyMatch {
   projectName: string;
 }
 
-/**
- * *** GRAPH-NATIVE QUERY (awkward in a relational schema) ***
- *
- * "Which jobs is this candidate connected to through technology they picked
- * up on a project, but never explicitly listed as a known skill/technology?"
- *
- *   (c:Candidate)-[:WORKED_ON]->(p:Project)-[:USES_TECHNOLOGY]->(t:Technology)
- *   WHERE NOT (c)-[:KNOWS_TECHNOLOGY]->(t)
- *   (t)<-[:REQUIRES_TECHNOLOGY]-(j:Job)
- *
- * In SQL this needs: a candidate_projects join table, a project_technologies
- * join table, a candidate_technologies join table used only to *exclude*
- * rows (NOT IN / LEFT JOIN ... IS NULL), and a job_technologies join table -
- * four joins plus an anti-join, re-derived every time the "shape" of the
- * question changes. Here it is one anti-pattern match. See README ->
- * "Why a Graph Database?" for the full comparison.
- */
 export async function findDiscoveredTechnologyMatches(candidateId: string): Promise<DiscoveredTechnologyMatch[]> {
   const records = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})-[:WORKED_ON]->(p:Project)-[:USES_TECHNOLOGY]->(t:Technology)
@@ -179,13 +133,6 @@ export interface RawMatchExplanation {
   projectPaths: { project: string; technology: string }[];
 }
 
-/**
- * *** MATCH EXPLANATION QUERY ("Why this job?") ***
- *
- * Re-derives, for one specific candidate/job pair, every graph path that
- * connects them, so the UI can render the literal chain of nodes (Candidate
- * -> Project -> Technology -> Job -> Company) that produced the recommendation.
- */
 export async function getMatchExplanationPaths(candidateId: string, jobId: string): Promise<RawMatchExplanation> {
   const records = await runQuery(
     `MATCH (c:Candidate {id: $candidateId})

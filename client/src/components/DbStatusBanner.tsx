@@ -2,12 +2,6 @@ import { useEffect, useState } from "react";
 import { TriangleAlert } from "lucide-react";
 import { api } from "../services/api";
 
-/**
- * Thin, app-wide banner that reflects /api/health. This is a secondary
- * safety net - individual pages already handle failed requests with their
- * own ErrorState - but this gives a persistent, obvious signal the moment
- * CognoDB becomes unreachable, even before the user tries an action.
- */
 export function DbStatusBanner() {
   const [degraded, setDegraded] = useState(false);
 

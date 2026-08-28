@@ -1,12 +1,6 @@
 import neo4j, { Driver, Session, ManagedTransaction } from "neo4j-driver";
 import { env, hasCognoDbConfig } from "../config/env.js";
 
-/**
- * Single, reused driver instance for the whole process (this is the "reusable
- * connection layer" - we never create a fresh driver per-request, only
- * per-request *sessions*, which are cheap and short-lived, as recommended by
- * the Neo4j driver docs).
- */
 let driver: Driver | null = null;
 let driverInitError: string | null = null;
 
@@ -21,7 +15,6 @@ function createDriver(): Driver {
   );
 }
 
-/** Lazily creates (once) and returns the shared driver, or null if unconfigured. */
 export function getDriver(): Driver | null {
   if (driver) return driver;
   if (!hasCognoDbConfig()) {
@@ -39,7 +32,6 @@ export function getDriver(): Driver | null {
   }
 }
 
-/** Verifies connectivity to CognoDB. Used by /api/health and on server boot. Never throws. */
 export async function checkDatabaseConnection(): Promise<{ ok: boolean; message: string }> {
   const d = getDriver();
   if (!d) {
@@ -55,11 +47,6 @@ export async function checkDatabaseConnection(): Promise<{ ok: boolean; message:
   }
 }
 
-/**
- * Thrown by `runQuery` whenever the database can't be reached. Route
- * handlers catch this specific error to return a clean 503 instead of
- * leaking driver internals to the client.
- */
 export class DatabaseUnavailableError extends Error {
   constructor(cause?: unknown) {
     const causeMessage = cause instanceof Error ? cause.message : undefined;
@@ -74,13 +61,6 @@ function getSession(): Session {
   return d.session({ database: env.cognodb.database });
 }
 
-/**
- * Runs a single read Cypher query with parameters and returns the raw driver
- * Records. This is the ONE place in the codebase that opens/closes a read
- * session - every query function in `database/queries/*` funnels through
- * here. Callers use `record.get(key)` to pull out fields/nodes and map them
- * into the app's own domain types (see database/queries/*.ts).
- */
 export async function runQuery(cypher: string, params: Record<string, unknown> = {}) {
   const session = getSession();
   try {

@@ -9,11 +9,6 @@ import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-// CORS_ORIGIN (comma-separated) restricts this to a known frontend origin
-// once the deployment URL is known. Left unset, CORS stays open - matching
-// the previous behavior - which is fine for local dev (the Vite dev server
-// proxies /api same-origin) and fine for a demo deployment, but should be
-// set once the production frontend URL is finalized.
 const corsOrigins = getCorsOrigins();
 app.use(cors(corsOrigins ? { origin: corsOrigins } : undefined));
 app.use(express.json());

@@ -7,15 +7,6 @@ interface GraphChainProps {
   caption?: string;
 }
 
-/**
- * Renders one literal graph path returned by /jobs/:id/match-details as a
- * connected node chain, e.g. Candidate -[WORKED_ON]-> Project
- * -[USES_TECHNOLOGY]-> Technology -[REQUIRES_TECHNOLOGY]-> Job
- * -[OFFERED_BY]-> Company. Every node name and every relationship label on
- * the connectors comes straight from the API response (node.relationship) -
- * nothing here is inferred or guessed on the frontend. Stacks vertically on
- * narrow screens, flows horizontally from `sm` up.
- */
 export function GraphChain({ nodes, caption }: GraphChainProps) {
   return (
     <div>

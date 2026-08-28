@@ -36,8 +36,6 @@ export function JobDetails() {
 
   useEffect(load, [jobId, candidateId]);
 
-  // Everything below is derived purely from details.paths/details.reasons/details.job -
-  // the exact response already returned by the API. Nothing is invented.
   const derived = useMemo(() => {
     if (!details) return null;
 
@@ -54,9 +52,6 @@ export function JobDetails() {
       projectConnections.get(projectNode.name)!.add(techNode.name);
     }
 
-    // One representative chain for the headline graph visual: prefer a
-    // project-derived path (the most graph-native signal), then a direct
-    // technology, then a skill.
     const representative =
       projectPaths[0] ?? details.paths.find((p) => p.kind === "direct_technology") ?? details.paths.find((p) => p.kind === "skill") ?? null;
 

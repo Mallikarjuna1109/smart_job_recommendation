@@ -5,11 +5,6 @@ interface CandidateHeaderProps {
   candidate: CandidateProfile;
 }
 
-/**
- * Candidate identity block for the Dashboard - a premium profile header
- * (name, role, location, experience), not a dashboard-widget label stack.
- * The name carries the visual weight; everything else is quieter support.
- */
 export function CandidateHeader({ candidate }: CandidateHeaderProps) {
   return (
     <div>

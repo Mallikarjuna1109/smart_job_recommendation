@@ -1,6 +1,3 @@
-// Domain types shared across queries, services and routes.
-// These mirror the node/relationship properties defined in the graph model
-// (see README.md -> "Graph Data Model").
 
 export interface Candidate {
   id: string;
@@ -59,7 +56,6 @@ export interface JobWithCompany extends Job {
   requiredTechnologies: Technology[];
 }
 
-/** One scored reason contributing to a match score, shown in the UI as a checklist item. */
 export interface MatchReason {
   type: "skill" | "technology" | "project_technology" | "experience" | "location";
   label: string;
@@ -75,17 +71,9 @@ export interface JobRecommendation {
   reasons: MatchReason[];
 }
 
-/** One hop in a "why this match" explanation path, e.g. Candidate -> Project -> Technology -> Job -> Company. */
 export interface GraphPathNode {
-  label: string; // node label, e.g. "Project"
-  name: string; // display name
-  /**
-   * The relationship type traversed FROM the previous node TO this node
-   * (undefined for the first node in the chain, which has no predecessor).
-   * This is the literal Cypher relationship type that produced this hop -
-   * see the MATCH patterns in getMatchExplanation() - never inferred from
-   * node-type pairs on the frontend.
-   */
+  label: string;
+  name: string;
   relationship?: string;
 }
 

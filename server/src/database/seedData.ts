@@ -1,5 +1,3 @@
-// Realistic seed dataset for JobGraph. Kept as plain data (no Cypher here) so
-// it can be inspected/edited without touching the write logic in seed.ts.
 
 export interface SeedSkill {
   id: string;

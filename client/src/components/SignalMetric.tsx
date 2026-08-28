@@ -7,11 +7,6 @@ interface SignalMetricProps {
   helper: string;
 }
 
-/**
- * One compact stat block (icon, number, label, supporting text) - meant to
- * sit inside a single divided container alongside its siblings, not as its
- * own bordered card. Used for the "Profile connections" summary row.
- */
 export function SignalMetric({ icon: Icon, value, label, helper }: SignalMetricProps) {
   return (
     <div className="flex flex-col gap-1.5 px-5 py-4">

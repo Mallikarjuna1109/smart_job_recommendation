@@ -1,9 +1,5 @@
 import { describe, expect, it, beforeEach } from "vitest";
 
-// These tests intentionally run WITHOUT CognoDB credentials configured (no
-// .env is loaded in the test environment) to verify the app degrades
-// gracefully instead of crashing, per the assignment's "handle DB
-// unavailability" requirement.
 
 describe("database connection - graceful degradation", () => {
   beforeEach(() => {

@@ -5,7 +5,6 @@ import { getRecommendationsForCandidate, getDiscoveredTechnologies } from "../se
 
 export const candidatesRouter = Router();
 
-// GET /api/candidates - candidate picker on the Dashboard
 candidatesRouter.get(
   "/",
   asyncHandler(async (_req, res) => {
@@ -14,7 +13,6 @@ candidatesRouter.get(
   })
 );
 
-// GET /api/candidates/:id - Candidate Profile page
 candidatesRouter.get(
   "/:id",
   asyncHandler(async (req, res) => {
@@ -27,7 +25,6 @@ candidatesRouter.get(
   })
 );
 
-// GET /api/candidates/:id/recommendations - core multi-hop recommendation query
 candidatesRouter.get(
   "/:id/recommendations",
   asyncHandler(async (req, res) => {
@@ -36,7 +33,6 @@ candidatesRouter.get(
   })
 );
 
-// GET /api/candidates/:id/discovered-technologies - graph-native query, exposed on its own for transparency
 candidatesRouter.get(
   "/:id/discovered-technologies",
   asyncHandler(async (req, res) => {

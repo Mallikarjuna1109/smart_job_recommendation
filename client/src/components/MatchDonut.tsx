@@ -7,14 +7,6 @@ interface MatchDonutProps {
 
 const STROKE_WIDTH = 5;
 
-/**
- * Circular progress ring for a match score - the percentage is drawn as the
- * filled arc AND always rendered as text in the center, so the information
- * is never conveyed by color/geometry alone. Ring and text share the same
- * match-tier color (lib/match.ts): green/amber/orange/neutral, never a flat
- * beige override, per the "use match colors for the donut and percentage"
- * rule - beige is reserved elsewhere (CTA text, headings, selected states).
- */
 export function MatchDonut({ score, size = 64 }: MatchDonutProps) {
   const clamped = Math.max(0, Math.min(100, score));
   const radius = (size - STROKE_WIDTH) / 2;

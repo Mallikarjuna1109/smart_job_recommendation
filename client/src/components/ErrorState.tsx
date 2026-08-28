@@ -6,11 +6,6 @@ interface ErrorStateProps {
   onRetry?: () => void;
 }
 
-/**
- * Shown when the API call failed outright - most commonly because CognoDB is
- * unreachable. Deliberately generic/user-friendly; technical detail stays in
- * server logs (see server/src/middleware/errorHandler.ts).
- */
 export function ErrorState({ title = "We couldn't connect to the job graph", message, onRetry }: ErrorStateProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-danger/25 bg-danger/5 px-6 py-16 text-center">

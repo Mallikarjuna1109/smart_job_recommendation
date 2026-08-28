@@ -10,13 +10,6 @@ interface ProfileSignalsProps {
   signals: ProfileSignal[];
 }
 
-/**
- * The candidate's profile stats as a compact editorial list - "04 Skills",
- * one row per figure - not bordered cards, not a divided box. Sits beside
- * the candidate identity on desktop (right-aligned) and stacks underneath
- * it on mobile. The number carries the visual weight; the icon is a small,
- * muted accent next to the label.
- */
 export function ProfileSignals({ signals }: ProfileSignalsProps) {
   return (
     <div className="flex flex-col gap-3 sm:items-end">

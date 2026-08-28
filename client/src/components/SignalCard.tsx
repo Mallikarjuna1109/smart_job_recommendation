@@ -8,7 +8,6 @@ interface SignalCardProps {
   children: ReactNode;
 }
 
-/** One profile-signal card (Skills / Technologies / Project) in the "Your strongest signals" grid. */
 export function SignalCard({ icon: Icon, title, count, children }: SignalCardProps) {
   return (
     <div className="surface flex flex-col gap-4 p-5 transition hover:border-line-hover">

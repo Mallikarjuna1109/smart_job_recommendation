@@ -5,7 +5,6 @@ import { getMatchExplanation } from "../services/recommendationService.js";
 
 export const jobsRouter = Router();
 
-// GET /api/jobs - used sparingly (e.g. Graph Explorer); recommendations are the primary job feed
 jobsRouter.get(
   "/",
   asyncHandler(async (_req, res) => {
@@ -14,7 +13,6 @@ jobsRouter.get(
   })
 );
 
-// GET /api/jobs/:id - Job Details page
 jobsRouter.get(
   "/:id",
   asyncHandler(async (req, res) => {
@@ -27,7 +25,6 @@ jobsRouter.get(
   })
 );
 
-// GET /api/jobs/:id/match-details?candidateId=... - "Why this match?" explanation
 jobsRouter.get(
   "/:id/match-details",
   asyncHandler(async (req, res) => {

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Network, ChevronDown, UserRound, LayoutDashboard, Sparkles } from "lucide-react";
+import { ChevronDown, UserRound, LayoutDashboard, Sparkles } from "lucide-react";
 import { useCandidateContext } from "../context/CandidateContext";
 import { ThemeToggle } from "./ThemeToggle";
 import { Drawer } from "./Drawer";
@@ -14,7 +14,6 @@ const links = [
   { to: "/profile", label: "Profile", icon: UserRound },
 ];
 
-/** Top navigation: wordmark, primary nav, current-candidate switcher, theme toggle. Collapses to icon-only nav below `md` so nothing overflows on mobile. */
 export function Navbar() {
   const location = useLocation();
   const { selectedCandidateId, selectCandidate } = useCandidateContext();
@@ -32,7 +31,7 @@ export function Navbar() {
       <header className="sticky top-0 z-10 border-b border-line bg-surface/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:gap-3 sm:px-6">
           <Link to="/" className="flex shrink-0 items-center gap-2 font-display text-lg font-bold tracking-tight text-ink">
-            <Network size={20} className="text-accent" strokeWidth={2.5} aria-hidden="true" />
+            <img src="/logo.png" alt="" className="h-6 w-auto shrink-0" />
             <span className="hidden md:inline">JobGraph</span>
           </Link>
 

@@ -4,7 +4,6 @@ interface LoadingStateProps {
   message?: string;
 }
 
-/** Shown whenever a page is waiting on a database-backed API call. Never leave a blank screen. */
 export function LoadingState({ message = "Loading..." }: LoadingStateProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-24 text-center">
@@ -14,7 +13,6 @@ export function LoadingState({ message = "Loading..." }: LoadingStateProps) {
   );
 }
 
-/** Pulse-skeleton placeholder for list-heavy pages so loading feels lighter than a full-page spinner. */
 export function SkeletonRows({ count = 3 }: { count?: number }) {
   return (
     <div className="flex flex-col gap-3" aria-hidden="true">

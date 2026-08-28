@@ -1,6 +1,3 @@
-// Mirrors server/src/types/domain.ts - kept independent (not a shared
-// package) to keep the project structure simple, per the assignment's
-// "don't overengineer" guidance.
 
 export interface Candidate {
   id: string;
@@ -78,7 +75,6 @@ export interface JobRecommendation {
 export interface GraphPathNode {
   label: string;
   name: string;
-  /** The relationship type traversed FROM the previous node TO this node, as returned by the API - never inferred on the frontend. */
   relationship?: string;
 }
 

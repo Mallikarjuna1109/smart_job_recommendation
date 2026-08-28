@@ -41,7 +41,6 @@ describe("scoreJobMatch", () => {
     const result = scoreJobMatch(
       baseMatch({ directTechnologies: ["Spring Boot"], projectTechnologies: ["Spring Boot", "Kafka"] })
     );
-    // Spring Boot is already a direct technology, so only Kafka should show as a project-only discovery.
     expect(result.projectTechnologies).toEqual(["Kafka"]);
     expect(result.reasons.some((r) => r.type === "project_technology" && r.label.includes("Kafka"))).toBe(true);
     expect(result.reasons.filter((r) => r.label.includes("Spring Boot"))).toHaveLength(1);

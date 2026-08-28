@@ -14,18 +14,6 @@ interface ProfileConnectionsProps {
   recommendations: JobRecommendation[];
 }
 
-/**
- * "Profile connections" - tells the story "here are this candidate's real
- * signals, here are the strongest ones, and here's how they lead to
- * opportunities" through layout/typography/subtle surfaces, not a literal
- * node/line graph diagram (that lives elsewhere - GraphChain on the "why
- * this match" screen). Every number here is real: skills/technologies/
- * projects come straight from the candidate's profile; "strongest
- * connections" is a frequency count over `matchedSkills`/`directTechnologies`
- * on the candidate's actual recommendations (lib/connections.ts); "top
- * connected roles" is just the top-scoring real recommendations. Nothing is
- * invented.
- */
 export function ProfileConnections({ skills, technologies, projects, recommendations }: ProfileConnectionsProps) {
   const strongest = computeStrongestConnections(recommendations);
   const topRoles = recommendations.slice(0, 3);
@@ -72,7 +60,6 @@ export function ProfileConnections({ skills, technologies, projects, recommendat
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Compact summary row */}
       <div className="surface grid grid-cols-1 divide-y divide-line sm:grid-cols-3 sm:divide-x sm:divide-y-0">
         <SignalMetric icon={Award} value={String(skills.length).padStart(2, "0")} label="Skills" helper="Core capabilities" />
         <SignalMetric icon={Code2} value={String(technologies.length).padStart(2, "0")} label="Technologies" helper="Known technologies" />
@@ -84,7 +71,6 @@ export function ProfileConnections({ skills, technologies, projects, recommendat
         />
       </div>
 
-      {/* Signal cards */}
       {cards.length > 0 && (
         <div>
           <p className="text-sm font-semibold text-ink">Your strongest signals</p>
@@ -92,7 +78,6 @@ export function ProfileConnections({ skills, technologies, projects, recommendat
         </div>
       )}
 
-      {/* Matching insights */}
       {(strongest.length > 0 || topRoles.length > 0) && (
         <div>
           <p className="text-sm font-semibold text-ink">Matching insights</p>

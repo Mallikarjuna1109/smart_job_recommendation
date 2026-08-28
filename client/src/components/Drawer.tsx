@@ -12,18 +12,15 @@ interface DrawerProps {
 const FOCUSABLE_SELECTOR =
   'button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-/** Generic right-side slide-over. Used for the candidate switcher and the Recommendations quick-preview. */
 export function Drawer({ open, onClose, title, children }: DrawerProps) {
   const panelRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const triggerRef = useRef<HTMLElement | null>(null);
 
-  // Capture the trigger element and move focus into the drawer as soon as it opens.
   useEffect(() => {
     if (!open) return;
     triggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null;
 
-    // Wait a tick for the drawer to mount so the close button actually exists to receive focus.
     const id = window.requestAnimationFrame(() => {
       const closeButton = closeButtonRef.current;
       if (closeButton) {
@@ -37,13 +34,11 @@ export function Drawer({ open, onClose, title, children }: DrawerProps) {
     return () => window.cancelAnimationFrame(id);
   }, [open]);
 
-  // Restore focus to whatever triggered the drawer once it closes.
   useEffect(() => {
     if (open) return;
     const trigger = triggerRef.current;
     triggerRef.current = null;
     if (!trigger) return;
-    // The trigger may have been unmounted while the drawer was open - guard against that.
     if (document.contains(trigger)) {
       trigger.focus();
     }

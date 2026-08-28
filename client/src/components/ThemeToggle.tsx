@@ -7,7 +7,6 @@ const OPTIONS: { value: Theme; label: string; icon: typeof Sun }[] = [
   { value: "system", label: "Match system theme", icon: Monitor },
 ];
 
-/** Compact 3-way Light/Dark/System control, placed in the Navbar. */
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
 

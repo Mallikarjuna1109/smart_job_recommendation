@@ -26,7 +26,6 @@ export function CandidateProvider({ children }: { children: ReactNode }) {
         window.localStorage.removeItem(STORAGE_KEY);
       }
     } catch {
-      // localStorage unavailable (private browsing, etc.) - selection just won't persist.
     }
   }, [selectedCandidateId]);
 

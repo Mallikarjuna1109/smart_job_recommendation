@@ -55,7 +55,6 @@ export function Dashboard() {
 
   useEffect(loadDetail, [selectedCandidateId]);
 
-  // --- No candidate selected yet: the picker is the whole page ---------
   if (!selectedCandidateId) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-14 sm:px-6">

@@ -1,18 +1,10 @@
 import type { Skill, Technology, Project } from "../types";
 
 export interface ProfileSnapshot {
-  /** Distinct project domains, straight from project.domain - real data, not inferred. */
   domains: string[];
-  /** The skill/technology categories this candidate has the most entries in, most first. */
   technicalFocus: string[];
 }
 
-/**
- * Derives a factual "professional snapshot" from the candidate's own data -
- * no invented biography text. Domain focus comes directly from the real
- * `project.domain` values; technical focus is a plain frequency count over
- * the real skill/technology `category` fields.
- */
 export function computeProfileSnapshot(skills: Skill[], technologies: Technology[], projects: Project[]): ProfileSnapshot {
   const domains = Array.from(new Set(projects.map((p) => p.domain).filter(Boolean)));
 

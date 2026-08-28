@@ -1,13 +1,3 @@
-/**
- * Seed script for JobGraph.
- *
- * Wipes and repopulates CognoDB with a realistic, interconnected dataset:
- * candidates, skills, technologies, projects, jobs and companies, plus every
- * relationship between them. Every write below uses parameterized Cypher via
- * UNWIND batches - no string concatenation of user/data values into a query.
- *
- * Run with:  npm run seed   (from the repo root, or `npm run seed -w server`)
- */
 import { getDriver, closeDriver } from "./connection.js";
 import { hasCognoDbConfig, env } from "../config/env.js";
 import { skills, technologies, companies, projects, jobs, candidates } from "./seedData.js";

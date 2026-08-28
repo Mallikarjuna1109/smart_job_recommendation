@@ -12,13 +12,6 @@ import { SignalCard } from "../components/SignalCard";
 import { getCategoryIcon } from "../lib/categoryIcon";
 import { computeProfileSnapshot } from "../lib/profileSnapshot";
 
-/**
- * Groups skills/technologies by their real `category` field (see
- * server/src/database/seedData.ts for the fixed set of category values -
- * Language, Database, Cloud, Engineering Practice, Soft Skill for skills;
- * Backend Framework, DevOps, Messaging, etc. for technologies). Preserves
- * first-seen category order rather than resorting alphabetically.
- */
 function groupByCategory<T extends { category: string; id: string; name: string }>(items: T[]): [string, T[]][] {
   const groups = new Map<string, T[]>();
   for (const item of items) {
@@ -29,16 +22,6 @@ function groupByCategory<T extends { category: string; id: string; name: string 
   return Array.from(groups.entries());
 }
 
-/**
- * The Profile page answers "who is this candidate, what do they know, and
- * what have they built?" - candidate identity, a factual snapshot derived
- * from their own data, a structured skill/technology stack grouped by real
- * category, and project experience as the centerpiece. It deliberately does
- * NOT repeat what the Dashboard already owns (recommendation counts, graph/
- * profile connections, matching signals, top connected roles) or what
- * Recommendations owns (match scores, job listings) - see Dashboard.tsx and
- * JobListItem.tsx for that half of the story.
- */
 export function CandidateProfile() {
   const { selectedCandidateId } = useCandidateContext();
   const [candidate, setCandidate] = useState<CandidateProfileType | null>(null);
@@ -77,7 +60,6 @@ export function CandidateProfile() {
 
       {!loading && !error && candidate && snapshot && (
         <>
-          {/* Profile header - compact identity, not another stats widget (that's the Dashboard's job) */}
           <div className="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
             <div>
               <h1 className="text-page-title">{candidate.name}</h1>
@@ -99,7 +81,6 @@ export function CandidateProfile() {
             </Link>
           </div>
 
-          {/* Professional snapshot - derived purely from this candidate's own data */}
           <div className="surface mb-10 p-6">
             <p className="text-eyebrow mb-2">Professional snapshot</p>
             <p className="text-base leading-relaxed text-ink-2">
@@ -133,7 +114,6 @@ export function CandidateProfile() {
             )}
           </div>
 
-          {/* Skills - structured by real category, not one flat pile of chips */}
           <div className="mb-10">
             <h2 className="text-section-title">Skills</h2>
             {skillGroups.length === 0 ? (
@@ -153,7 +133,6 @@ export function CandidateProfile() {
             )}
           </div>
 
-          {/* Technology stack - same structured treatment as Skills */}
           <div className="mb-10">
             <h2 className="text-section-title">Technology stack</h2>
             {techGroups.length === 0 ? (
@@ -173,7 +152,6 @@ export function CandidateProfile() {
             )}
           </div>
 
-          {/* Project experience - the centerpiece: a portfolio section, not a dashboard widget */}
           <div>
             <h2 className="text-section-title">Project experience</h2>
             {candidate.projects.length === 0 ? (

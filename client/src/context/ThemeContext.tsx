@@ -6,7 +6,6 @@ const STORAGE_KEY = "jobgraph.theme";
 
 interface ThemeContextValue {
   theme: Theme;
-  /** The theme actually applied right now - resolves "system" to light/dark via the OS preference. */
   resolvedTheme: "light" | "dark";
   setTheme: (theme: Theme) => void;
 }
@@ -32,7 +31,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       const stored = window.localStorage.getItem(STORAGE_KEY);
       if (stored === "light" || stored === "dark" || stored === "system") return stored;
     } catch {
-      // localStorage unavailable - fall through to the default.
     }
     return "system";
   });
@@ -44,7 +42,6 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       window.localStorage.setItem(STORAGE_KEY, theme);
     } catch {
-      // localStorage unavailable - theme just won't persist across reloads.
     }
   }, [theme]);
 

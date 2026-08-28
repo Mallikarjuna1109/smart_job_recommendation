@@ -1,14 +1,5 @@
 export type MatchLevel = "excellent" | "strong" | "moderate" | "weak";
 
-/**
- * Single source of truth for match-score thresholds and their colors -
- * shared by MatchDonut, JobListItem, and JobDetails' connection-strength
- * label. Every color below reads from the dedicated `--color-match-*`
- * tokens (index.css), never a raw hex or a generic semantic token, so the
- * four tiers stay clearly distinct from one another (and from the beige
- * accent) wherever they're used - no component hardcodes its own match
- * colors.
- */
 export function matchLevel(score: number): MatchLevel {
   if (score >= 95) return "excellent";
   if (score >= 80) return "strong";
