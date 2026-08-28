@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------
+ * Theme tokens. Three states: explicit light, explicit dark, and system
+ * (no data-theme attribute -> the media-query block below decides, guarded
+ * so an explicit "light" override always wins over an OS dark preference).
+ * Light = warm ivory/white + navy ink + indigo accent.
+ * Dark   = black/charcoal + warm beige ink + beige accent.
+ * ------------------------------------------------------------------- */
+:root {
+  --color-bg: 247 247 245;
+  --color-surface: 255 255 255;
+  --color-surface-2: 255 255 255;
+  --color-surface-3: 249 249 247;
+  --color-ink: 17 24 39;
+  --color-ink-2: 91 100 114;
+  --color-ink-3: 123 132 145;
+  --color-line: 229 231 235;
+  --color-line-hover: 209 213 219;
+  --color-edge: 156 163 175;
+  --color-ring: 79 70 229;
+  --color-accent: 79 70 229;
+  --color-accent-2: 67 56 202;
+  --color-on-accent: 255 255 255;
+  --color-positive: 5 150 105;
+  --color-warning: 217 119 6;
+  --color-danger: 220 38 38;
+  /* Dedicated match-status colors (lib/match.ts) - kept separate from the
+     generic positive/warning/danger semantic tokens above so that tuning
+     match-card visibility never touches unrelated status UI (DbStatusBanner,
+     generic badges, etc). Must stay clearly distinct from one another and
+     from the beige accent - see the dark block below for why this token
+     split exists. */
+  --color-match-excellent: 5 150 105;
+  --color-match-strong: 217 119 6;
+  --color-match-moderate: 234 88 12;
+  --color-match-weak: 225 29 72;
+}
+
+/* Dark = black canvas + warm beige/cream identity for the general UI, but
+ * match-status colors are a deliberate exception: they use clearly visible
+ * green/amber/orange/red (not beige-muted tones) so a candidate can tell a
+ * 100% match from a 60% one at a glance. Surfaces step up in three visible
+ * layers (page -> card -> elevated/hover) rather than blending together. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-bg: 11 11 10;
+    --color-surface: 20 20 19;
+    --color-surface-2: 26 25 23;
+    --color-surface-3: 33 31 27;
+    --color-ink: 243 235 221;
+    --color-ink-2: 201 190 173;
+    --color-ink-3: 157 148 134;
+    --color-line: 52 49 44;
+    --color-line-hover: 74 69 61;
+    --color-edge: 90 84 74;
+    --color-ring: 184 170 148;
+    --color-accent: 232 221 200;
+    --color-accent-2: 242 233 216;
+    --color-on-accent: 10 10 9;
+    --color-positive: 145 183 160;
+    --color-warning: 201 168 106;
+    --color-danger: 213 138 130;
+    --color-match-excellent: 52 211 153;
+    --color-match-strong: 245 184 75;
+    --color-match-moderate: 249 115 22;
+    --color-match-weak: 248 113 113;
+  }
+}
+
+:root[data-theme="dark"] {
+  --color-bg: 11 11 10;
+  --color-surface: 20 20 19;
+  --color-surface-2: 26 25 23;
+  --color-surface-3: 33 31 27;
+  --color-ink: 243 235 221;
+  --color-ink-2: 201 190 173;
+  --color-ink-3: 157 148 134;
+  --color-line: 52 49 44;
+  --color-line-hover: 74 69 61;
+  --color-edge: 90 84 74;
+  --color-ring: 184 170 148;
+  --color-accent: 232 221 200;
+  --color-accent-2: 242 233 216;
+  --color-on-accent: 10 10 9;
+  --color-positive: 145 183 160;
+  --color-warning: 201 168 106;
+  --color-danger: 213 138 130;
+  --color-match-excellent: 52 211 153;
+  --color-match-strong: 245 184 75;
+  --color-match-moderate: 249 115 22;
+  --color-match-weak: 248 113 113;
+}
+
+html {
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-canvas text-ink antialiased;
+}
+
+/* Subtle, purposeful theme-switch transition - not applied to layout properties. */
+body,
+.surface,
+.surface-2,
+button,
+input,
+select,
+textarea {
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+@layer components {
+  /* Typography scale */
+  .text-eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-ink-3 dark:text-accent;
+  }
+  .text-page-title {
+    @apply font-display text-2xl font-bold tracking-tight text-ink sm:text-[1.75rem];
+  }
+  .text-section-title {
+    @apply font-display text-lg font-bold tracking-tight text-ink;
+  }
+  .text-card-title {
+    @apply font-display text-base font-semibold text-ink;
+  }
+  .text-meta {
+    @apply text-sm text-ink-2;
+  }
+  .text-helper {
+    @apply text-xs text-ink-3;
+  }
+
+  /* Surfaces */
+  .surface {
+    @apply rounded-xl border border-line bg-surface;
+  }
+  .surface-2 {
+    @apply rounded-xl border border-line bg-surface-2;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-on-accent transition hover:bg-accent-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-line bg-surface px-4 py-2.5 text-sm font-semibold text-ink transition hover:bg-surface-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-ink-2 transition hover:bg-surface-2 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  /* Badges - neutral in light mode (unchanged from the original redesign);
+     in dark mode, a flat elevated-surface tint (not a low-opacity beige
+     wash) so tags stay clearly visible against the card instead of nearly
+     disappearing into it. */
+  .badge {
+    @apply inline-flex items-center gap-1 rounded-md border border-line bg-surface-2 px-2 py-1 text-xs font-medium text-ink-2 dark:border-line-hover dark:bg-surface-3 dark:text-accent;
+  }
+  .badge-accent {
+    @apply inline-flex items-center gap-1 rounded-md border border-accent/20 bg-accent/10 px-2 py-1 text-xs font-medium text-accent-2 dark:text-accent;
+  }
+  .badge-positive {
+    @apply inline-flex items-center gap-1 rounded-md bg-positive/10 px-2 py-1 text-xs font-medium text-positive;
+  }
+  .badge-warning {
+    @apply inline-flex items-center gap-1 rounded-md bg-warning/10 px-2 py-1 text-xs font-medium text-warning;
+  }
+  .badge-danger {
+    @apply inline-flex items-center gap-1 rounded-md bg-danger/10 px-2 py-1 text-xs font-medium text-danger;
+  }
+
+  /* Forms */
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink-2;
+  }
+  .input {
+    @apply block w-full rounded-lg border border-line bg-surface px-3.5 py-2.5 text-sm text-ink placeholder:text-ink-3 transition focus:border-ring focus:outline-none focus:ring-2 focus:ring-accent/[0.18];
+  }
+}
