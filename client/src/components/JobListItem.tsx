@@ -49,8 +49,8 @@ export function JobListItem({ recommendation, onPreview }: JobListItemProps) {
 
           {topSignals.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
-              {topSignals.map((r, i) => (
-                <SkillBadge key={i} label={r.label.replace(" (via project experience)", "")} tone="accent" />
+              {topSignals.map((r) => (
+                <SkillBadge key={r.label} label={r.label.replace(" (via project experience)", "")} tone="accent" />
               ))}
             </div>
           )}

@@ -17,10 +17,10 @@ export function MatchReasonList({ reasons }: { reasons: MatchReason[] }) {
 
   return (
     <ul className="flex flex-col gap-1.5">
-      {reasons.map((reason, index) => {
+      {reasons.map((reason) => {
         const Icon = ICONS[reason.type];
         return (
-          <li key={index} className="flex items-center justify-between gap-3 rounded-lg bg-surface px-3.5 py-2.5 text-sm">
+          <li key={reason.label} className="flex items-center justify-between gap-3 rounded-lg bg-surface px-3.5 py-2.5 text-sm">
             <span className="flex items-center gap-2.5 text-ink-2">
               <Icon size={15} className="shrink-0 text-ink-3" aria-hidden="true" />
               {reason.label}

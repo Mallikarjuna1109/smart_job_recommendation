@@ -1,9 +1,6 @@
 import { runQuery } from "../connection.js";
+import { toNumber } from "../../utils/neo4j.js";
 import type { JobWithCompany, Skill, Technology } from "../../types/domain.js";
-
-function toNumber(value: any): number {
-  return typeof value?.toNumber === "function" ? value.toNumber() : value;
-}
 
 function mapJobRecord(record: any): JobWithCompany {
   const j = record.get("j").properties;

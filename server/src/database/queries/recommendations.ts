@@ -1,8 +1,5 @@
 import { runQuery } from "../connection.js";
-
-function toNumber(value: any): number {
-  return typeof value?.toNumber === "function" ? value.toNumber() : value;
-}
+import { toNumber } from "../../utils/neo4j.js";
 
 function nodeNames(nodes: any[]): string[] {
   return (nodes ?? []).filter(Boolean).map((n: any) => n.properties?.name ?? n.name).filter(Boolean);
@@ -24,6 +21,35 @@ export interface RawJobMatch {
   matchedSkills: string[];
   directTechnologies: string[];
   projectTechnologies: string[];
+}
+
+/** Shared row->RawJobMatch mapping for both the all-jobs and single-job variants below, so they can never drift apart. */
+function mapRawJobMatchRecord(r: any): RawJobMatch {
+  const c = (r.get("c") as any).properties;
+  const j = (r.get("j") as any).properties;
+  const company = (r.get("company") as any).properties;
+  return {
+    candidate: {
+      id: c.id,
+      name: c.name,
+      yearsExperience: toNumber(c.yearsExperience),
+      location: c.location,
+    },
+    job: {
+      id: j.id,
+      title: j.title,
+      description: j.description,
+      location: j.location,
+      experienceRequired: toNumber(j.experienceRequired),
+      employmentType: j.employmentType,
+    },
+    company: { id: company.id, name: company.name, industry: company.industry, location: company.location },
+    requiredSkills: nodeNames(r.get("requiredSkills") as any[]),
+    requiredTechnologies: nodeNames(r.get("requiredTechnologies") as any[]),
+    matchedSkills: nodeNames(r.get("matchedSkills") as any[]),
+    directTechnologies: nodeNames(r.get("directTechnologies") as any[]),
+    projectTechnologies: nodeNames(r.get("projectTechnologies") as any[]),
+  };
 }
 
 /**
@@ -65,33 +91,42 @@ export async function findJobMatchesForCandidate(candidateId: string): Promise<R
     { candidateId }
   );
 
-  return records.map((r) => {
-    const c = (r.get("c") as any).properties;
-    const j = (r.get("j") as any).properties;
-    const company = (r.get("company") as any).properties;
-    return {
-      candidate: {
-        id: c.id,
-        name: c.name,
-        yearsExperience: toNumber(c.yearsExperience),
-        location: c.location,
-      },
-      job: {
-        id: j.id,
-        title: j.title,
-        description: j.description,
-        location: j.location,
-        experienceRequired: toNumber(j.experienceRequired),
-        employmentType: j.employmentType,
-      },
-      company: { id: company.id, name: company.name, industry: company.industry, location: company.location },
-      requiredSkills: nodeNames(r.get("requiredSkills") as any[]),
-      requiredTechnologies: nodeNames(r.get("requiredTechnologies") as any[]),
-      matchedSkills: nodeNames(r.get("matchedSkills") as any[]),
-      directTechnologies: nodeNames(r.get("directTechnologies") as any[]),
-      projectTechnologies: nodeNames(r.get("projectTechnologies") as any[]),
-    };
-  });
+  return records.map(mapRawJobMatchRecord);
+}
+
+/**
+ * Same traversal and scoring inputs as `findJobMatchesForCandidate`, scoped
+ * to one job via `Job {id: $jobId}` instead of scanning every job - used by
+ * `getMatchExplanation()` ("Why this match?") so it doesn't have to re-run
+ * the multi-hop query across the whole job catalog just to read back one
+ * job's result. Same MATCH/OPTIONAL MATCH/WHERE pattern as the all-jobs
+ * query, so the filtering semantics (and therefore the score) for that job
+ * are identical - returns null under the exact same condition the all-jobs
+ * query would have excluded it (no matched skill/technology at all).
+ */
+export async function findJobMatchForCandidateAndJob(candidateId: string, jobId: string): Promise<RawJobMatch | null> {
+  const records = await runQuery(
+    `MATCH (c:Candidate {id: $candidateId})
+     MATCH (j:Job {id: $jobId})-[:OFFERED_BY]->(company:Company)
+     OPTIONAL MATCH (j)-[:REQUIRES_SKILL]->(reqSkill:Skill)
+     OPTIONAL MATCH (j)-[:REQUIRES_TECHNOLOGY]->(reqTech:Technology)
+     OPTIONAL MATCH (c)-[:HAS_SKILL]->(matchedSkill:Skill)<-[:REQUIRES_SKILL]-(j)
+     OPTIONAL MATCH (c)-[:KNOWS_TECHNOLOGY]->(directTech:Technology)<-[:REQUIRES_TECHNOLOGY]-(j)
+     OPTIONAL MATCH (c)-[:WORKED_ON]->(:Project)-[:USES_TECHNOLOGY]->(projectTech:Technology)<-[:REQUIRES_TECHNOLOGY]-(j)
+     WITH c, j, company,
+          collect(DISTINCT reqSkill) AS requiredSkills,
+          collect(DISTINCT reqTech) AS requiredTechnologies,
+          collect(DISTINCT matchedSkill) AS matchedSkills,
+          collect(DISTINCT directTech) AS directTechnologies,
+          collect(DISTINCT projectTech) AS projectTechnologies
+     WHERE size(matchedSkills) > 0 OR size(directTechnologies) > 0 OR size(projectTechnologies) > 0
+     RETURN c, j, company, requiredSkills, requiredTechnologies,
+            matchedSkills, directTechnologies, projectTechnologies`,
+    { candidateId, jobId }
+  );
+
+  if (records.length === 0) return null;
+  return mapRawJobMatchRecord(records[0]);
 }
 
 export interface DiscoveredTechnologyMatch {

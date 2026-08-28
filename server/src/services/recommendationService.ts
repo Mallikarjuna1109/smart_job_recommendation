@@ -1,5 +1,6 @@
 import {
   findJobMatchesForCandidate,
+  findJobMatchForCandidateAndJob,
   findDiscoveredTechnologyMatches,
   getMatchExplanationPaths,
   type RawJobMatch,
@@ -105,7 +106,10 @@ export function scoreJobMatch(raw: RawJobMatch): JobRecommendation {
  */
 export async function getRecommendationsForCandidate(candidateId: string): Promise<JobRecommendation[]> {
   const rawMatches = await findJobMatchesForCandidate(candidateId);
-  return rawMatches.map(scoreJobMatch).sort((a, b) => b.score - a.score);
+  // Primary: score descending. Secondary: job id ascending, purely so that
+  // equal-score jobs always render in the same order - never changes the
+  // ranking between jobs with different scores.
+  return rawMatches.map(scoreJobMatch).sort((a, b) => b.score - a.score || a.job.id.localeCompare(b.job.id));
 }
 
 /** Re-exposes the graph-native "discovered technology" query for its own endpoint. */
@@ -122,8 +126,7 @@ export async function getMatchExplanation(candidateId: string, jobId: string): P
   const [candidate, job] = await Promise.all([getCandidateProfile(candidateId), getJobById(jobId)]);
   if (!candidate || !job) return null;
 
-  const rawMatches = await findJobMatchesForCandidate(candidateId);
-  const rawMatch = rawMatches.find((m) => m.job.id === jobId);
+  const rawMatch = await findJobMatchForCandidateAndJob(candidateId, jobId);
   const scored = rawMatch
     ? scoreJobMatch(rawMatch)
     : { score: 0, reasons: [] as MatchReason[] };

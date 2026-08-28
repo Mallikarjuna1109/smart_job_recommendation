@@ -20,6 +20,11 @@ if (process.env.NODE_ENV !== "test") {
 export const env = {
   nodeEnv: process.env.NODE_ENV ?? "development",
   port: Number(process.env.PORT ?? 4000),
+  // Comma-separated list of allowed origins for CORS, e.g.
+  // "https://app.example.com,https://staging.example.com". Unset in local
+  // dev (Vite proxies /api to this server, so the browser never makes a
+  // cross-origin request in the first place) - see getCorsOrigins() below.
+  corsOrigin: process.env.CORS_ORIGIN ?? "",
 
   cognodb: {
     uri: process.env.COGNODB_URI ?? "",
@@ -37,4 +42,13 @@ export const env = {
  */
 export function hasCognoDbConfig(): boolean {
   return Boolean(env.cognodb.uri && env.cognodb.username && env.cognodb.password);
+}
+
+/** Parsed `CORS_ORIGIN` allowlist, or `undefined` if it isn't set (caller falls back to permissive CORS). */
+export function getCorsOrigins(): string[] | undefined {
+  const origins = env.corsOrigin
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+  return origins.length > 0 ? origins : undefined;
 }

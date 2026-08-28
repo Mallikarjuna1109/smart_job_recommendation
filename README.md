@@ -200,11 +200,15 @@ The total is capped at 100. See `scoreJobMatch()` in [`server/src/services/recom
 jobgraph/
 ├── client/                        # React + TypeScript + Vite + Tailwind + lucide-react
 │   └── src/
-│       ├── components/            # CandidateSelector, JobListItem, GraphChain, GraphOverview, ThemeToggle, Drawer, ...
+│       ├── components/            # CandidateSelector, CandidateHeader, JobListItem, JobPreview, GraphChain,
+│       │                          # ProfileConnections, ProfileSignals, SignalCard, SignalMetric, MatchDonut,
+│       │                          # MatchReasonList, MatchSummary, ThemeToggle, Drawer, FilterBar, ...
 │       ├── pages/                 # Dashboard, Recommendations, JobDetails, CandidateProfile
 │       ├── services/api.ts        # Typed fetch wrapper around the API
 │       ├── context/                # CandidateContext (selected-candidate, localStorage-backed) + ThemeContext
-│       ├── lib/                   # Small pure helpers (match-score thresholds, node icon/style map)
+│       ├── lib/                   # Small pure helpers - match.ts (score thresholds/colors), graphSchema.ts
+│       │                          # (node icon/style map), connections.ts (strongest-connections ranking),
+│       │                          # roleIcon.ts / categoryIcon.ts, profileSnapshot.ts
 │       └── types/                 # Shared TS types (mirrors server/src/types/domain.ts)
 │
 ├── server/                        # Node + TypeScript + Express
@@ -278,6 +282,7 @@ All configuration lives in one root-level `.env` file (git-ignored). See [`.env.
 | `COGNODB_DATABASE` | No | Database name (default: `neo4j`) |
 | `PORT` | No | API server port (default: `4000`) |
 | `NODE_ENV` | No | `development` / `production` / `test` |
+| `CORS_ORIGIN` | No | Comma-separated allowed origins for CORS (e.g. `https://app.example.com`). Unset = open CORS, which is fine in dev (the Vite proxy keeps `/api` same-origin) and fine for an early demo deploy - set this once the production frontend URL is finalized |
 | `VITE_API_BASE_URL` | No | Overrides the client's API base URL (default: relative `/api`, proxied to the server in dev) |
 
 No credentials are hardcoded anywhere in the codebase — everything is read from `process.env` via `server/src/config/env.ts`, and `.env` is excluded by `.gitignore`.
@@ -351,4 +356,4 @@ A simple deployment path:
 - **Skills vs. Technologies are separate node labels** with no overlapping names, so "matched skill" and "matched technology" in the UI are always unambiguous.
 - **No auth, no microservices, no Redis/Kafka.** Out of scope for what this assignment is testing (graph modeling, Cypher, full-stack engineering, UI/UX) — see the assignment's own "do not overengineer" guidance.
 - **Theming is CSS-variable-based, not a UI kit.** Light (ivory/white + navy + indigo) and dark (black/charcoal + warm beige) are two token sets in `client/src/index.css`, switched via a `data-theme` attribute and a small `ThemeContext`/`ThemeToggle` (Light/Dark/System, persisted to `localStorage`). No CSS-in-JS or theming library.
-- **The graph visuals are plain flexbox/SVG-free diagrams, not a graph-rendering library.** `GraphChain` (the literal "why this match" path) and `GraphOverview` (the Dashboard's profile-composition summary) are both just styled flex layouts - proportionate to how much graph data there actually is per view, and avoids pulling in a canvas/WebGL graph library for a handful of nodes.
+- **The graph visuals are plain flexbox/SVG-free diagrams, not a graph-rendering library.** `GraphChain` (the literal "why this match" path) and `ProfileConnections`/`SignalCard`/`SignalMetric` (the Dashboard's profile-composition summary, built from `lib/connections.ts`) are all just styled flex layouts - proportionate to how much graph data there actually is per view, and avoids pulling in a canvas/WebGL graph library for a handful of nodes.

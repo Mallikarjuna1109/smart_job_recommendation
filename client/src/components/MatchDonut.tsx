@@ -27,7 +27,10 @@ export function MatchDonut({ score, size = 64 }: MatchDonutProps) {
     <div
       className="relative inline-flex shrink-0 items-center justify-center"
       style={{ width: size, height: size }}
-      role="img"
+      role="progressbar"
+      aria-valuenow={clamped}
+      aria-valuemin={0}
+      aria-valuemax={100}
       aria-label={`${score}% match`}
     >
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90" aria-hidden="true">

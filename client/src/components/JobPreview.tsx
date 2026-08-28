@@ -46,7 +46,7 @@ export function JobPreview({ recommendation, candidateId }: JobPreviewProps) {
           {reasons.length === 0 ? (
             <p className="text-sm text-ink-3">No specific graph connections for this role.</p>
           ) : (
-            reasons.map((r, i) => <SkillBadge key={i} label={r.label} tone="accent" />)
+            reasons.map((r) => <SkillBadge key={r.label} label={r.label} tone="accent" />)
           )}
         </div>
       </div>

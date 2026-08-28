@@ -1,4 +1,5 @@
 import { runQuery } from "../connection.js";
+import { toNumber } from "../../utils/neo4j.js";
 import type { Candidate, CandidateProfile, Project, Skill, Technology } from "../../types/domain.js";
 
 function toCandidate(props: Record<string, any>): Candidate {
@@ -6,9 +7,7 @@ function toCandidate(props: Record<string, any>): Candidate {
     id: props.id,
     name: props.name,
     email: props.email,
-    yearsExperience: typeof props.yearsExperience?.toNumber === "function"
-      ? props.yearsExperience.toNumber()
-      : props.yearsExperience,
+    yearsExperience: toNumber(props.yearsExperience),
     location: props.location,
     role: props.role,
   };

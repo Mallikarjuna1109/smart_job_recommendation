@@ -45,6 +45,10 @@ export function Navbar() {
                 <Link
                   key={to}
                   to={disabled ? "/" : to}
+                  onClick={(e) => {
+                    if (disabled) e.preventDefault();
+                  }}
+                  tabIndex={disabled ? -1 : undefined}
                   className={`flex items-center gap-1.5 rounded-lg border px-2 py-2 text-sm font-medium transition sm:px-3 ${
                     isActive
                       ? "border-transparent bg-surface-2 text-ink dark:border-accent/20 dark:bg-accent/10 dark:text-accent-2"

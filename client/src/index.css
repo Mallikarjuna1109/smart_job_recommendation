@@ -16,7 +16,7 @@
   --color-surface-3: 249 249 247;
   --color-ink: 17 24 39;
   --color-ink-2: 91 100 114;
-  --color-ink-3: 123 132 145;
+  --color-ink-3: 100 108 120;
   --color-line: 229 231 235;
   --color-line-hover: 209 213 219;
   --color-edge: 156 163 175;
@@ -47,15 +47,15 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --color-bg: 11 11 10;
-    --color-surface: 20 20 19;
-    --color-surface-2: 26 25 23;
-    --color-surface-3: 33 31 27;
+    --color-surface: 24 23 20;
+    --color-surface-2: 34 32 27;
+    --color-surface-3: 47 44 37;
     --color-ink: 243 235 221;
     --color-ink-2: 201 190 173;
     --color-ink-3: 157 148 134;
     --color-line: 52 49 44;
     --color-line-hover: 74 69 61;
-    --color-edge: 90 84 74;
+    --color-edge: 145 136 119;
     --color-ring: 184 170 148;
     --color-accent: 232 221 200;
     --color-accent-2: 242 233 216;
@@ -72,15 +72,15 @@
 
 :root[data-theme="dark"] {
   --color-bg: 11 11 10;
-  --color-surface: 20 20 19;
-  --color-surface-2: 26 25 23;
-  --color-surface-3: 33 31 27;
+  --color-surface: 24 23 20;
+  --color-surface-2: 34 32 27;
+  --color-surface-3: 47 44 37;
   --color-ink: 243 235 221;
   --color-ink-2: 201 190 173;
   --color-ink-3: 157 148 134;
   --color-line: 52 49 44;
   --color-line-hover: 74 69 61;
-  --color-edge: 90 84 74;
+  --color-edge: 145 136 119;
   --color-ring: 184 170 148;
   --color-accent: 232 221 200;
   --color-accent-2: 242 233 216;
@@ -112,6 +112,34 @@ input,
 select,
 textarea {
   transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+/* Respect a system-level request for reduced motion: keep state changes
+   (theme switch, drawer open/close) instant instead of animated, without
+   touching the transitions/animations themselves for everyone else. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Consistent accessible keyboard-focus ring for interactive elements that
+   don't already define their own :focus-visible treatment (.btn-primary,
+   .btn-secondary and .input below do, and win on specificity where they
+   overlap). Inset so it's never clipped by a parent's overflow-hidden (e.g.
+   the CandidateSelector list). Mouse/touch interaction never triggers
+   :focus-visible, so this never shows up as a click/hover effect. */
+a:focus-visible,
+button:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+  outline: 2px solid rgb(var(--color-accent));
+  outline-offset: -2px;
 }
 
 @layer components {
