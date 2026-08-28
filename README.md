@@ -2,8 +2,8 @@
 
 **JobGraph** is a graph-based job recommendation application. Instead of scoring jobs against a candidate with a hidden formula or a hardcoded percentage, it traverses a real graph of candidates, skills, technologies, projects, jobs and companies stored in **CognoDB** (a Bolt/Neo4j-compatible graph database) — and shows you exactly which relationships produced each recommendation.
 
-> Live Demo: `<DEPLOYED_URL>`
-> Screen Recording: `<RECORDING_URL>`
+> Live Demo: `https://smart-job-recommendation-client.vercel.app/`
+> Screen Recording: `https://drive.google.com/file/d/1fgEUyrdY6_9MRUTYHnrzD72sTl-hk1Nv/view?usp=sharing`
 
 ---
 
